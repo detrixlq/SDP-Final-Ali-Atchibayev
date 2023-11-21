@@ -12,8 +12,8 @@ import java.util.ArrayList;
 
 //order processing logic
 public class PizzaOrderProcessing {
+    private static PizzaOrderProcessing instance;
     private static final DecimalFormat df = new DecimalFormat("0.00");
-
     private static PizzaFactory pizzaFactory;
     private static List<Pizza> orderList;
     private static Currency currency;
@@ -21,6 +21,13 @@ public class PizzaOrderProcessing {
         this.pizzaFactory = pizzaFactory;
         this.orderList = new ArrayList<>();
         this.currency = currency;
+    }
+    //singleton pattern implementation
+    public static PizzaOrderProcessing getInstance(PizzaFactory pizzaFactory, Currency currency) {
+        if (instance == null) {
+            instance = new PizzaOrderProcessing(pizzaFactory, currency);
+        }
+        return instance;
     }
 
     public static void addToOrder(int pizzaType, int toppingType){
@@ -30,33 +37,23 @@ public class PizzaOrderProcessing {
     }
 
     public static Pizza createPizza(int pizzaType){
-        switch (pizzaType) {
-            case 1:
-                return pizzaFactory.createPepperoniPizza();
-            case 2:
-                return pizzaFactory.createNeapolitanPizza();
-            case 3:
-                return pizzaFactory.createHawaiianPizza();
-            case 4:
-                return pizzaFactory.createMargheritaPizza();
-            default:
-                throw new IllegalArgumentException("Invalid pizza type");
-        }
+        return switch (pizzaType) {
+            case 1 -> pizzaFactory.createPepperoniPizza();
+            case 2 -> pizzaFactory.createNeapolitanPizza();
+            case 3 -> pizzaFactory.createHawaiianPizza();
+            case 4 -> pizzaFactory.createMargheritaPizza();
+            default -> throw new IllegalArgumentException("Invalid pizza type");
+        };
     }
 
     public static Pizza addToppings(Pizza pizza, int toppingType){
-        switch (toppingType){
-            case 1:
-                return new ExtraCheeseTopping(pizza);
-            case 2:
-                return new MushroomsTopping(pizza);
-            case 3:
-                return new PineappleTopping(pizza);
-            case 4:
-                return pizza;
-            default:
-                throw new IllegalArgumentException("Invalid topping type");
-        }
+        return switch (toppingType) {
+            case 1 -> new ExtraCheeseTopping(pizza);
+            case 2 -> new MushroomsTopping(pizza);
+            case 3 -> new PineappleTopping(pizza);
+            case 4 -> pizza;
+            default -> throw new IllegalArgumentException("Invalid topping type");
+        };
     }
 
     public static double calculateCheck(){
@@ -68,7 +65,7 @@ public class PizzaOrderProcessing {
     }
 
     public static void printCheck(double checkCost, Currency currency){
-
+        System.out.println("...");
         System.out.println("Your check:");
         double checkTotal = currency.convertPrice(checkCost);
         for(Pizza pizza : orderList){
@@ -79,4 +76,9 @@ public class PizzaOrderProcessing {
         System.out.println("...");
         System.out.println("Check Total:                          " + currency.getSymbol() + df.format(checkTotal));
     }
+
+    public List<Pizza> returnOrder(){
+        return orderList;
+    }
+
 }
