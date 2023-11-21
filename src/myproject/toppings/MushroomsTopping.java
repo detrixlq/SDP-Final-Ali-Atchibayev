@@ -9,7 +9,7 @@ public class MushroomsTopping extends ToppingsDecorator{
 
     @Override
     public String getName() {
-        return pizza.getName() + " with mushroom";
+        return pizza.getName() + " with mushrooms";
     }
     @Override
     public double getPrice() {

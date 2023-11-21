@@ -1,5 +1,8 @@
 package myproject;
+import myproject.orderprocessing.Currency;
+import myproject.orderprocessing.CurrencyAdapter;
 import myproject.orderprocessing.PizzaOrderProcessing;
+import myproject.orderprocessing.USD;
 import myproject.pizza.PizzaFactory;
 import java.util.Scanner;
 public class Main {
@@ -8,12 +11,13 @@ public class Main {
 
         PizzaFactory pizzaFactory = new PizzaFactory();
 
+        Currency usd = new USD();
 
-        PizzaOrderProcessing pizzaOrderProcessor = new PizzaOrderProcessing(pizzaFactory);
+        PizzaOrderProcessing pizzaOrderProcessor = new PizzaOrderProcessing(pizzaFactory, usd);
         System.out.println("Welcome to our Pizzeria!");
         System.out.println("...");
         while (true) {
-            System.out.println("Choose your pizza:");
+            System.out.println("Menu:");
             System.out.println("1. Pepperoni $14.99");
             System.out.println("2. Neapolitan $10.99");
             System.out.println("3. Hawaiian $12.99 ");
@@ -34,7 +38,14 @@ public class Main {
         }
 
         double totalCost = PizzaOrderProcessing.calculateCheck();
-        PizzaOrderProcessing.printCheck(totalCost);
-
+        PizzaOrderProcessing.printCheck(totalCost, usd);
+        System.out.println("...");
+        System.out.println("Would you like to print the check in KZT?");
+        System.out.println("1. Yes     2. No");
+        int adapter = scanner.nextInt();
+        if(adapter == 1){
+            CurrencyAdapter kzt = new CurrencyAdapter(usd, 458.63);
+            PizzaOrderProcessing.printCheck(totalCost, kzt);
+        }
     }
 }

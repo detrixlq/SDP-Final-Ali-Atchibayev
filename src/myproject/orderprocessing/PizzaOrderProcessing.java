@@ -16,10 +16,11 @@ public class PizzaOrderProcessing {
 
     private static PizzaFactory pizzaFactory;
     private static List<Pizza> orderList;
-
-    public PizzaOrderProcessing(PizzaFactory pizzaFactory){
+    private static Currency currency;
+    public PizzaOrderProcessing(PizzaFactory pizzaFactory, Currency currency){
         this.pizzaFactory = pizzaFactory;
         this.orderList = new ArrayList<>();
+        this.currency = currency;
     }
 
     public static void addToOrder(int pizzaType, int toppingType){
@@ -66,13 +67,16 @@ public class PizzaOrderProcessing {
         return checkCost;
     }
 
-    public static void printCheck(double checkCost){
+    public static void printCheck(double checkCost, Currency currency){
+
         System.out.println("Your check:");
+        double checkTotal = currency.convertPrice(checkCost);
         for(Pizza pizza : orderList){
+            double currentPrice = currency.convertPrice(pizza.getPrice());
             System.out.println((orderList.indexOf(pizza)+1) + ". " + pizza.getName());
-            System.out.println("Price:                                $" + df.format(pizza.getPrice()));
+            System.out.println("Price:                                "+ currency.getSymbol() + df.format(currentPrice));
         }
         System.out.println("...");
-        System.out.println("Check Total: $" + df.format(checkCost));
+        System.out.println("Check Total:                          " + currency.getSymbol() + df.format(checkTotal));
     }
 }
